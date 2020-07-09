@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,21 +22,32 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.nerazzurro.wh.MainActivity;
 import com.nerazzurro.wh.R;
 
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private TimePickerDialog picker;
     private TimeShift TimeShift;
+    private static final String TAG = "LogSnippets";
+
+    // Access a Cloud Firestore instance from your Activity
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -75,6 +87,8 @@ public class HomeFragment extends Fragment {
                 TimeShift = new TimeShift(startAM, stopAM, startPM, stopPM);
 
                 Result.setText(LocalTime.MIN.plus(TimeShift.Duration()).toString());
+
+
             }
         });
 
@@ -124,5 +138,13 @@ public class HomeFragment extends Fragment {
             return false;
         }
         return true;
+    }
+
+    private void logUseFirestore(TimeShift timeShift){
+        // Add a new document with a generated id.
+        Map<String, Object> data = new HashMap<>();
+        data.put("date", new Timestamp(System.currentTimeMillis()));
+        /*data.put("name", name);
+        data.put("score", score);*/
     }
 }

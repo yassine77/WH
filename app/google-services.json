@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "610673988744",
+    "firebase_url": "https://workhours-10d65.firebaseio.com",
+    "project_id": "workhours-10d65",
+    "storage_bucket": "workhours-10d65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610673988744:android:a08c0181bedde1f392bb3d",
+        "android_client_info": {
+          "package_name": "com.nerazzurro.wh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610673988744-snpeo7289kgrpc7i5mqn5c6aaj1vdsme.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmbbZSYpztgzg0-4eWjlcz9QdADnfyALE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610673988744-snpeo7289kgrpc7i5mqn5c6aaj1vdsme.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
