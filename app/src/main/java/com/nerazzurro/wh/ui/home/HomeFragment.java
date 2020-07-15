@@ -24,7 +24,9 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.nerazzurro.wh.MainActivity;
 import com.nerazzurro.wh.R;
@@ -47,7 +49,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "LogSnippets";
 
     // Access a Cloud Firestore instance from your Activity
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference FirestoreUselogs = FirebaseFirestore.getInstance().collection("uselogs");
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -86,8 +88,18 @@ public class HomeFragment extends Fragment {
 
                 TimeShift = new TimeShift(startAM, stopAM, startPM, stopPM);
 
+                // Debug only
+                //TimeShift = new TimeShift(LocalTime.parse("08:00"), LocalTime.parse("12:00"), LocalTime.parse("14:00"), LocalTime.parse("18:03"));
+
+                // Display the worked hours result
                 Result.setText(LocalTime.MIN.plus(TimeShift.Duration()).toString());
 
+                //Log Results on Firestore
+                WHLogInput logInput = new WHLogInput(TimeShift.getStartAM().toString(), TimeShift.getStopAM().toString()
+                        , TimeShift.getStartPM().toString(), TimeShift.getStopPM().toString()
+                        , LocalTime.MIN.plus(TimeShift.Duration()).toString());
+
+                logUseFirestore(logInput);
 
             }
         });
@@ -140,11 +152,30 @@ public class HomeFragment extends Fragment {
         return true;
     }
 
-    private void logUseFirestore(TimeShift timeShift){
+    private void logUseFirestore(WHLogInput whLogInput){
         // Add a new document with a generated id.
+        // Using put because can't use Timestamp with add
         Map<String, Object> data = new HashMap<>();
-        data.put("date", new Timestamp(System.currentTimeMillis()));
-        /*data.put("name", name);
-        data.put("score", score);*/
+        data.put("Date", new Timestamp(System.currentTimeMillis()));
+        data.put("StartAM", whLogInput.getStartam());
+        data.put("StopAM", whLogInput.getStopam());
+        data.put("StartPM", whLogInput.getStartpm());
+        data.put("StopPM", whLogInput.getStoppm());
+        data.put("WorkedHours", whLogInput.getWorkedhours());
+
+
+        // Add a new document with a generated id.
+        FirestoreUselogs.add(data).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
     }
 }
